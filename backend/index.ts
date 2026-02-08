@@ -1,9 +1,19 @@
 import { connnectDB } from "./src/config/databases";
 import app from "./src/app";
 
+import {createServer} from "http";
+import { initializeSocket } from "./src/utils/socket";
 const PORT=process.env.PORT||3000;
+
+const httpServer=createServer(app);
+
+initializeSocket(httpServer);
+
 connnectDB().then(()=>{
-    app.listen(PORT , ()=>{
+    httpServer.listen(PORT , ()=>{
         console.log("Server is running");
     });
+}).catch((error)=>{
+    console.error("Failed to start server: ",error);
+    process.exit(1);
 });
